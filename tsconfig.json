@@ -12,6 +12,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
+    "src/http/__test__/login.test.tsx",
     "expo-env.d.ts"
   ]
 }
