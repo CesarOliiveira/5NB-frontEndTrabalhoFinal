@@ -25,7 +25,7 @@ export const PageSignUp = () => {
                         </Pressable>
 
                         <Text style={styles.logoText}>
-                            ONG <Text style={{ color: colors.green }}>APP</Text>
+                            Weather <Text style={{ color: colors.green }}>APP</Text>
                         </Text>
                         <Text style={styles.slogan}>
                             Criar uma conta

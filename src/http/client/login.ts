@@ -53,7 +53,7 @@ export const SignInHandle = async (email : String, password : String) => {
     const response = await handleLogin(email, password);
 
     if (isResponseTrue(response)) {
-        router.replace({ pathname: "/(tabs)/index" })
+        router.replace({ pathname: "/(tabs)" })
         return
     }
 }
