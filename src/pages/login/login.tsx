@@ -18,7 +18,7 @@ export const PageLogin = () => {
                 <View style={styles.container}>
                     <View style={styles.header}>
                         <Text style={styles.logoText}>
-                            Weather <Text style={{ color: colors.green }}>APP.</Text>
+                            Weather <Text style={{ color: colors.green }}>APP</Text>
                         </Text>
                         <Text style={styles.slogan}>
                             Bem vindo de volta.
