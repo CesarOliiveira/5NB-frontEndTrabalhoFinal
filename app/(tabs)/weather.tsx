@@ -1,9 +1,9 @@
 import { SafeAreaView, Text } from "react-native";
 
-export default function Home(){
+export default function Weather(){
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Text>Teste</Text>
+            <Text>teste</Text>
         </SafeAreaView>
     )
 }
