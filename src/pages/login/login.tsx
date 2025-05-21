@@ -25,7 +25,7 @@ export const PageLogin = () => {
                             Weather <Text style={{ color: colors.green }}>APP</Text>
                         </Text>
                         <Text style={styles.slogan}>
-                            Bem vindo de volta.
+                            Bem vindo de volta
                         </Text>
                     </View>
 
