@@ -14,6 +14,18 @@ jest.mock('expo-router', () => ({
    },
 }));
 
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  setItem: jest.fn(() => Promise.resolve(null)),
+  getItem: jest.fn(() => Promise.resolve(null)),
+  removeItem: jest.fn(() => Promise.resolve(null)),
+  clear: jest.fn(() => Promise.resolve(null)),
+  getAllKeys: jest.fn(() => Promise.resolve([])),
+}));
+
+jest.mock('@/src/db/credentials', () => ({
+  DB_URL: 'http://192.168.18.9:8080', // Valor mockado para o URL da sua API
+}));
+
 
 describe('handleRegexLogin', () => {
 

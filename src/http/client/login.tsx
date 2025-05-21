@@ -1,8 +1,12 @@
 
+import { UserContext } from "@/app/_layout"
 import axios from "axios"
 import { router } from "expo-router"
+import { useContext } from "react"
 import { Alert } from "react-native"
 import { z } from "zod"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DB_URL } from "@/src/db/credentials"
 
 
 const MESSAGE_FAILED = "Email ou senha no formato incorreto"
@@ -27,7 +31,7 @@ export const handleRegexLogin = (email : String, password : String) => {
 
 
 export const handleLogin = async (email : String, password : String) => {
-    var response = await axios.post(`http://192.168.18.9:8080/user/login`, {
+    var response = await axios.post(`${DB_URL}/user/login`, {
         email: `${email}`,
         passwordHash: `${password}`
     })
@@ -41,7 +45,12 @@ export const handleLogin = async (email : String, password : String) => {
     return response
 }
 
+export const getUser = async (email : String) => {
+    await AsyncStorage.setItem("email", email)
+}   
+
 export const SignInHandle = async (email : String, password : String) => {
+    
 
     var regexLogin = handleRegexLogin(email, password);
 
@@ -53,6 +62,7 @@ export const SignInHandle = async (email : String, password : String) => {
     const response = await handleLogin(email, password);
 
     if (isResponseTrue(response)) {
+        getUser(response.email)
         router.replace({ pathname: "/(tabs)" })
         return
     }

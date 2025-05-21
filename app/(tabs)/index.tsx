@@ -1,9 +1,7 @@
-import { SafeAreaView, Text } from "react-native";
+import { PageTempo } from "@/src/pages/tempo/tempo";
 
 export default function Home(){
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <Text>Teste</Text>
-        </SafeAreaView>
+        <PageTempo/>
     )
 }

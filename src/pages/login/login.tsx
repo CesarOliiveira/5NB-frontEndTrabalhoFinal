@@ -1,17 +1,21 @@
 import colors from "@/constants/Colors";
-import { Link } from "expo-router";
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Link, router } from "expo-router";
+import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-import logoPng from '@/assets/images/login.png'
-import { useState } from "react";
+import logoPng from '@/assets/images/login.png';
+import { useContext, useState } from "react";
+import { UserContext } from "@/app/_layout";
+import { SignInHandle } from "@/src/http/client/login";
 
 
-import { SignInHandle } from "../../http/client/login";
 
 export const PageLogin = () => {
+    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
    
+
     return (
         <>
             <SafeAreaView style={{ flex: 1 }}>
@@ -53,7 +57,6 @@ export const PageLogin = () => {
                                 secureTextEntry
                             />
                         </View>
-
                         <TouchableOpacity style={styles.button} onPress={() => SignInHandle(email, password)}>
                             <Text style={styles.buttonText}>Entrar</Text>
                         </TouchableOpacity>

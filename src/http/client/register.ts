@@ -24,13 +24,11 @@ export const handleRegexRegister = (name: String, email: String, password: Strin
 
 export const postRegister = async (name: String, email: String, passwordHash: String) => {
     var response = await axios.post(`${DB_URL}/user/register`, {
-        name,
-        email,
-        passwordHash
-    }).then((response) => {
-         console.log("teste")
-        return response
-       
+       name,
+       email,
+       passwordHash
+    }).then((resp) => {
+        return resp
     }).catch((res) => {
         console.log(res)
         return res
