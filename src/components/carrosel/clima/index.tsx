@@ -1,29 +1,27 @@
+import { DB_URL } from "@/src/db/credentials"
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native"
 
 export const Clima = ({ clima }) => {
 
+    
+return (
+    <View style={styles.container}>
 
-    async function getClimaSemana() {
-        const response = await fetch(``)
-    }
-
-    return (
-        <View style={styles.container}>
-            
-            <View style={styles.contentImage}>
-                <Text>{clima?.cidade?.nome}</Text>
-                <Image
-                    source={{ uri: clima.image }}
-                    style={styles.image}
-                />
-            </View>
-
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', padding: 5}}>
-                <Text>Min: {clima.temperaturaMinima}°</Text>
-                <Text>Max: {clima.temperaturaMaxima}°</Text>
-            </View>
+        <View style={styles.contentImage}>
+            <Text>{clima?.cidade?.nome}</Text>
+            <Image
+                source={{ uri: clima?.image }}
+                style={styles.image}
+            />
         </View>
-    )
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5 }}>
+            <Text>Min: {clima?.temperaturaMin}°</Text>
+            <Text>Max: {clima?.temperaturaMax}°</Text>
+        </View>
+    </View>
+)
 }
 
 const styles = StyleSheet.create({
@@ -33,7 +31,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: "#D3D3D3",
         height: 120,
-        width: 140
+        width: 170
     },
     contentImage: {
         justifyContent: 'center',

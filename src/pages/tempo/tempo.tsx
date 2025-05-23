@@ -1,10 +1,9 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { LocationContext, UserContext } from "@/app/_layout";
+import { LocationContext } from "@/app/_layout";
 import { CarroselClima } from "@/src/components/carrosel/carroselClima";
 import { useContext, useEffect, useState } from "react";
 import MapView, { Marker } from 'react-native-maps';
-import AsyncStorage, { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
 export const PageTempo = () => {
     const { location } = useContext(LocationContext);
@@ -73,7 +72,9 @@ export const PageTempo = () => {
                     </View>
                 </View>
 
-                <Text style={{fontWeight: 600, fontSize: 17, marginBottom: 8}}>Dias da semana:</Text>
+                <Text style={{fontWeight: 600, fontSize: 17, marginBottom: 8}}>
+                    Outras Cidades:
+                </Text>
                 <CarroselClima />
 
             </View>

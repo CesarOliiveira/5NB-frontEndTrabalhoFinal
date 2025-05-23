@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -45,7 +46,7 @@ export default function TabLayout() {
               name="profile"
               options={{
                 title: 'Perfil',
-                tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+                tabBarIcon: ({ color }) => <Ionicons size={28} name="add-circle" color={color} />,
               }}
             />
           </Tabs>
