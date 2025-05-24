@@ -1,1 +1,1 @@
-export const DB_URL = "http://192.168.18.9:8080"
+export const DB_URL = "http://192.168.15.3:4000"

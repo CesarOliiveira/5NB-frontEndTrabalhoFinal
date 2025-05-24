@@ -1,133 +1,217 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
 import { LocationContext } from "@/app/_layout";
 import { CarroselClima } from "@/src/components/carrosel/carroselClima";
+import { theme } from '@/src/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, useEffect, useState } from "react";
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 
-export const PageTempo = () => {
-    const { location } = useContext(LocationContext);
+interface WeatherData {
+    cidade: {
+        nome: string;
+        pais: string;
+    };
+    temperatura: number;
+    temperaturaMin: number;
+    temperaturaMax: number;
+    descricao: string;
+    umidade: number;
+    image: string;
+}
 
-    const [clima, setClima] = useState();
+interface Location {
+    coords: {
+        latitude: number;
+        longitude: number;
+    };
+}
+
+interface LocationContextType {
+    location: Location | null;
+}
+
+export const PageTempo = () => {
+    const context = useContext(LocationContext) as unknown as LocationContextType;
+    const location = context?.location;
+    const [clima, setClima] = useState<WeatherData | null>(null);
 
     async function getClima() {
-        var response = await fetch(`http://192.168.18.9:8080/api/clima/${location.coords.latitude}/${location.coords.longitude}`).then((res) => {
-            return res.json()
-        }).catch((err) => {
-            return err
-        })
-
-        setClima(response)
+        if (!location) return;
+        
+        try {
+            const response = await fetch(`http://192.168.15.3:4000/api/clima/${location.coords.latitude}/${location.coords.longitude}`);
+            const data = await response.json();
+            setClima(data);
+        } catch (err) {
+            console.error('Erro ao buscar clima:', err);
+        }
     }
 
     useEffect(() => {
-        getClima()
-    }, [])
+        if (location) {
+            getClima();
+        }
+    }, [location]);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
-            <View style={styles.container}>
-                <MapView
-                    style={styles.maps}
-                    initialRegion={{
-                        latitude: location.coords.latitude,
-                        longitude: location.coords.longitude,
-                        latitudeDelta: 0.005,
-                        longitudeDelta: 0.005,
-                    }}
+        <SafeAreaView style={styles.safeArea}>
+            <LinearGradient
+                colors={[theme.colors.gradient.start, theme.colors.gradient.end]}
+                style={styles.container}
+            >
+                <ScrollView 
+                    style={styles.scrollView}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollContent}
                 >
-                    <Marker
-                        coordinate={{
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude,
-                        }}
-                    />
-                </MapView>
-            </View>
-
-            <View style={styles.information}>
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text style={styles.label}>{clima?.cidade.nome}</Text>
-                    <TouchableOpacity onPress={() => getClima()}>
-                        <Text style={{color: 'blue'}}>Atualizar</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.information_grid}>
-                    <View style={styles.contentInformation}>
-                        <Text style={styles.informationTitle}>Temperatura</Text>
-                        <Text style={styles.infoWeather}>{clima?.temperatura}° Graus</Text>
+                    <View style={styles.mapContainer}>
+                        <MapView
+                            style={styles.maps}
+                            initialRegion={{
+                                latitude: location?.coords.latitude || 0,
+                                longitude: location?.coords.longitude || 0,
+                                latitudeDelta: 0.005,
+                                longitudeDelta: 0.005,
+                            }}
+                        >
+                            {location && (
+                                <Marker
+                                    coordinate={{
+                                        latitude: location.coords.latitude,
+                                        longitude: location.coords.longitude,
+                                    }}
+                                />
+                            )}
+                        </MapView>
                     </View>
-                    <View style={styles.contentInformation}>
-                        <Text style={styles.informationTitle}>Umidade</Text>
-                        <Text style={styles.infoWeather}>{clima?.umidade}%</Text>
-                    </View>
-                    <View style={styles.contentInformation}>
-                        <Text style={styles.informationTitle}>Temperatura minima</Text>
-                        <Text style={styles.infoWeather}>{clima?.temperaturaMin}° Graus</Text>
-                    </View>
-                    <View style={styles.contentInformation}>
-                        <Text style={styles.informationTitle}>Temperatura máxima</Text>
-                        <Text style={styles.infoWeather}>{clima?.temperaturaMax}° Graus</Text>
-                    </View>
-                </View>
 
-                <Text style={{fontWeight: 600, fontSize: 17, marginBottom: 8}}>
-                    Outras Cidades:
-                </Text>
-                <CarroselClima />
+                    <View style={styles.information}>
+                        <View style={styles.headerContainer}>
+                            <Text style={styles.cityName}>{clima?.cidade?.nome}</Text>
+                            <TouchableOpacity 
+                                style={styles.refreshButton}
+                                onPress={getClima}
+                            >
+                                <Ionicons name="refresh" size={24} color={theme.colors.primary} />
+                            </TouchableOpacity>
+                        </View>
 
-            </View>
+                        <View style={styles.information_grid}>
+                            <View style={styles.contentInformation}>
+                                <Text style={styles.informationTitle}>Temperatura</Text>
+                                <Text style={styles.infoWeather}>{clima?.temperatura}°C</Text>
+                            </View>
+                            <View style={styles.contentInformation}>
+                                <Text style={styles.informationTitle}>Umidade</Text>
+                                <Text style={styles.infoWeather}>{clima?.umidade}%</Text>
+                            </View>
+                            <View style={styles.contentInformation}>
+                                <Text style={styles.informationTitle}>Temperatura mínima</Text>
+                                <Text style={styles.infoWeather}>{clima?.temperaturaMin}°C</Text>
+                            </View>
+                            <View style={styles.contentInformation}>
+                                <Text style={styles.informationTitle}>Temperatura máxima</Text>
+                                <Text style={styles.infoWeather}>{clima?.temperaturaMax}°C</Text>
+                            </View>
+                        </View>
 
+                        <Text style={styles.sectionTitle}>
+                            Outras Cidades:
+                        </Text>
+                        <View style={styles.carouselContainer}>
+                            <CarroselClima />
+                        </View>
+                    </View>
+                </ScrollView>
+            </LinearGradient>
         </SafeAreaView>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: theme.colors.gradient.start
+    },
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        paddingBottom: theme.spacing.xxl,
+    },
+    mapContainer: {
+        alignItems: 'center',
+        paddingVertical: theme.spacing.xl,
     },
     maps: {
-        width: "80%",
-        height: 320,
-        borderRadius: 8
+        width: "90%",
+        height: 250,
+        borderRadius: theme.borderRadius.lg,
+        ...theme.shadows.md,
     },
     information: {
         flex: 1,
-        backgroundColor: 'white',
-        borderTopRightRadius: 16,
-        borderTopLeftRadius: 16,
-        padding: 16
+        backgroundColor: theme.colors.background.main,
+        borderTopRightRadius: theme.borderRadius.xl,
+        borderTopLeftRadius: theme.borderRadius.xl,
+        padding: theme.spacing.lg,
+        paddingBottom: theme.spacing.xxl,
+        ...theme.shadows.lg,
     },
-    label: {
-        fontSize: 24,
-        fontWeight: 600,
-        marginBottom: 20
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: theme.spacing.xl,
+        paddingTop: theme.spacing.md,
+    },
+    cityName: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: theme.colors.text.primary,
+    },
+    refreshButton: {
+        padding: theme.spacing.sm,
+        backgroundColor: theme.colors.background.input,
+        borderRadius: theme.borderRadius.full,
+        ...theme.shadows.sm,
     },
     information_grid: {
-        display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        marginBottom: 20
+        marginBottom: theme.spacing.xl,
+        gap: theme.spacing.md,
     },
     contentInformation: {
-        width: '48%',
-        height: 57,
-        backgroundColor: '#D3D3D3',
-        marginBottom: 20,
-        padding: 4,
-        paddingLeft: 9,
-        borderRadius: 8
+        width: '47%',
+        backgroundColor: theme.colors.background.input,
+        padding: theme.spacing.md,
+        borderRadius: theme.borderRadius.lg,
+        ...theme.shadows.sm,
     },
     informationTitle: {
-        color: 'black',
-        fontWeight: 600,
-        fontSize: 15
+        color: theme.colors.text.secondary,
+        fontSize: 14,
+        marginBottom: theme.spacing.xs,
     },
     infoWeather: {
-
-    }
+        color: theme.colors.text.primary,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: theme.colors.text.primary,
+        marginBottom: theme.spacing.lg,
+        marginTop: theme.spacing.md,
+    },
+    carouselContainer: {
+        marginBottom: theme.spacing.xxl,
+    },
 });

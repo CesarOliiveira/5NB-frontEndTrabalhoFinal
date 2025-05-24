@@ -7,8 +7,6 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Ionicons } from '@expo/vector-icons';
 
-
-
 export default function TabLayout() {
   return (
     <>
@@ -33,24 +31,28 @@ export default function TabLayout() {
                 tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
               }}
             />
-             <Tabs.Screen
-              name="historico"
+            <Tabs.Screen
+              name="search-city"
               options={{
-                title: 'Historico',
-                href: null,
-                tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+                title: 'Buscar',
+                tabBarIcon: ({ color }) => <Ionicons size={28} name="search" color={color} />,
               }}
             />
-
-             <Tabs.Screen
+            <Tabs.Screen
+              name="favoritos"
+              options={{
+                title: 'Favoritos',
+                tabBarIcon: ({ color }) => <Ionicons size={28} name="heart" color={color} />,
+              }}
+            />
+            <Tabs.Screen
               name="profile"
               options={{
                 title: 'Perfil',
-                tabBarIcon: ({ color }) => <Ionicons size={28} name="add-circle" color={color} />,
+                tabBarIcon: ({ color }) => <Ionicons size={28} name="person" color={color} />,
               }}
             />
           </Tabs>
     </>
-
   );
 }

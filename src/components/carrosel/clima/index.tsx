@@ -1,44 +1,71 @@
-import { DB_URL } from "@/src/db/credentials"
-import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from "react-native"
+import { theme } from '@/src/constants/theme';
+import { Image, StyleSheet, Text, View } from "react-native";
 
-export const Clima = ({ clima }) => {
-
-    
-return (
-    <View style={styles.container}>
-
-        <View style={styles.contentImage}>
-            <Text>{clima?.cidade?.nome}</Text>
-            <Image
-                source={{ uri: clima?.image }}
-                style={styles.image}
-            />
-        </View>
-
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 5 }}>
-            <Text>Min: {clima?.temperaturaMin}°</Text>
-            <Text>Max: {clima?.temperaturaMax}°</Text>
-        </View>
-    </View>
-)
+interface WeatherData {
+    cidade: {
+        nome: string;
+        pais: string;
+    };
+    temperatura: number;
+    temperaturaMin: number;
+    temperaturaMax: number;
+    descricao: string;
+    umidade: number;
+    image: string;
 }
+
+interface ClimaProps {
+    clima: WeatherData;
+}
+
+export const Clima: React.FC<ClimaProps> = ({ clima }) => {
+    return (
+        <View style={styles.container}>
+            <View style={styles.card}>
+                <Text style={styles.cityName}>{clima?.cidade?.nome}</Text>
+                <Image
+                    source={{ uri: clima?.image }}
+                    style={styles.image}
+                />
+                <View style={styles.temperatureContainer}>
+                    <Text style={styles.temperatureText}>Min: {clima?.temperaturaMin}°</Text>
+                    <Text style={styles.temperatureText}>Max: {clima?.temperaturaMax}°</Text>
+                </View>
+            </View>
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: 8,
-        backgroundColor: "#D3D3D3",
-        height: 120,
-        width: 170
+        width: 180,
     },
-    contentImage: {
-        justifyContent: 'center',
-        alignItems: 'center'
+    card: {
+        backgroundColor: theme.colors.background.card,
+        borderRadius: theme.borderRadius.lg,
+        padding: theme.spacing.md,
+        ...theme.shadows.md,
+    },
+    cityName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: theme.colors.text.primary,
+        marginBottom: theme.spacing.sm,
+        textAlign: 'center',
     },
     image: {
-        width: 44,
-        height: 44
+        width: '100%',
+        height: 100,
+        resizeMode: 'contain',
+        marginVertical: theme.spacing.sm,
     },
-})
+    temperatureContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: theme.spacing.sm,
+    },
+    temperatureText: {
+        fontSize: 14,
+        color: theme.colors.text.secondary,
+    },
+});

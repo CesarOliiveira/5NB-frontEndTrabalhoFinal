@@ -1,14 +1,30 @@
-import { FlatList } from "react-native"
-import { Clima } from "./clima"
-import { useEffect, useState } from "react";
+import { theme } from '@/src/constants/theme';
 import { DB_URL } from "@/src/db/credentials";
-import { getClimaByLatitudeAndLongitude } from "@/src/db/client/climaClient";
+import { useEffect, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+import { Clima } from "./clima";
 
+interface WeatherData {
+    cidade: {
+        nome: string;
+        pais: string;
+    };
+    temperatura: number;
+    temperaturaMin: number;
+    temperaturaMax: number;
+    descricao: string;
+    umidade: number;
+    image: string;
+}
 
-export const CarroselClima = () => {
-    const [climasCidades, setClimaCidades] = useState([]);
+interface City {
+    nome: string;
+}
 
-     const cidades = [
+export const CarroselClima: React.FC = () => {
+    const [climasCidades, setClimaCidades] = useState<WeatherData[]>([]);
+
+    const cidades: City[] = [
         { nome: "São Paulo" },
         { nome: "Brasilia" },
         { nome: "Rio de Janeiro" },
@@ -16,47 +32,48 @@ export const CarroselClima = () => {
 
     async function getClimaCidades() {
         try {
-            // Cria um array de promessas, uma para cada cidade
             const promises = cidades.map(async (cidade) => {
-                const response = await fetch(`${DB_URL}/api/clima/${cidade?.nome}`);
+                const response = await fetch(`${DB_URL}/api/clima/${cidade.nome}`);
 
                 if (!response.ok) { 
-                    throw new Error(`Erro ao buscar clima para ${cidade?.nome}: ${response.statusText}`);
+                    throw new Error(`Erro ao buscar clima para ${cidade.nome}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                return { nome: cidade?.nome, ...data }; 
+                return { ...data }; 
             });
 
-            
             const todosOsClimas = await Promise.all(promises);
-
-            
             setClimaCidades(todosOsClimas);
-            console.log("Climas carregados:", todosOsClimas);
-
         } catch (error) {
             console.error("Erro ao carregar os climas das cidades:", error);
-    
         }
     }
 
-
     useEffect(() => {
-        getClimaCidades()
-        console.log(climasCidades)
-    }, [])
-
+        getClimaCidades();
+    }, []);
 
     return (
+        <View style={styles.container}>
+            <FlatList
+                data={climasCidades}
+                renderItem={({ item }) => <Clima clima={item} />}
+                horizontal={true}
+                contentContainerStyle={styles.listContent}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.cidade.nome}
+            />
+        </View>
+    );
+};
 
-        <FlatList
-            data={climasCidades}
-            renderItem={({ item }) => <Clima clima={item} />}
-            horizontal={true}
-            contentContainerStyle={{ gap: 14, paddingLeft: 16, paddingRight: 16 }}
-            showsHorizontalScrollIndicator={false}
-        />
-
-    )
-}
+const styles = StyleSheet.create({
+    container: {
+        marginTop: theme.spacing.md,
+    },
+    listContent: {
+        paddingHorizontal: theme.spacing.md,
+        gap: theme.spacing.lg,
+    },
+});

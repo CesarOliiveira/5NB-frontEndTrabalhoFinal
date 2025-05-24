@@ -1,31 +1,34 @@
-import colors from "@/constants/Colors";
+import { DismissKeyboard } from "@/src/components/DismissKeyboard";
+import { theme } from "@/src/constants/theme";
+import { handleRegister } from "@/src/http/client/register";
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { Ionicons } from '@expo/vector-icons'
 import { useState } from "react";
-import { handleRegexRegister, handleRegister } from "@/src/http/client/register";
-
+import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export const PageSignUp = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState("");
 
     return (
-        <>
-            <SafeAreaView style={{ flex: 1 }}>
-                <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+            <DismissKeyboard>
+                <LinearGradient
+                    colors={[theme.colors.gradient.start, theme.colors.gradient.end]}
+                    style={styles.container}
+                >
                     <View style={styles.header}>
-
                         <Pressable
                             style={styles.backButton}
                             onPress={() => { router.back() }}
                         >
-                            <Ionicons name="arrow-back" size={24} color={colors.white} />
+                            <Ionicons name="arrow-back" size={24} color={theme.colors.text.light} />
                         </Pressable>
 
                         <Text style={styles.logoText}>
-                            Weather <Text style={{ color: colors.green }}>APP</Text>
+                            Weather <Text style={{ color: theme.colors.accent }}>APP</Text>
                         </Text>
                         <Text style={styles.slogan}>
                             Criar uma conta
@@ -33,27 +36,29 @@ export const PageSignUp = () => {
                     </View>
 
                     <View style={styles.form}>
-                        <View>
+                        <View style={styles.inputContainer}>
                             <Text style={styles.label}>Nome Completo</Text>
                             <TextInput
                                 placeholder="Digite seu nome..."
                                 style={styles.input}
                                 onChangeText={setName}
                                 value={name}
+                                placeholderTextColor={theme.colors.text.secondary}
                             />
                         </View>
 
-                        <View>
+                        <View style={styles.inputContainer}>
                             <Text style={styles.label}>Email</Text>
                             <TextInput
                                 placeholder="Digite seu email..."
                                 style={styles.input}
                                 onChangeText={setEmail}
                                 value={email}
+                                placeholderTextColor={theme.colors.text.secondary}
                             />
                         </View>
 
-                        <View>
+                        <View style={styles.inputContainer}>
                             <Text style={styles.label}>Senha</Text>
                             <TextInput
                                 placeholder="Digite sua senha..."
@@ -61,83 +66,90 @@ export const PageSignUp = () => {
                                 onChangeText={setPassword}
                                 value={password}
                                 secureTextEntry
+                                placeholderTextColor={theme.colors.text.secondary}
                             />
                         </View>
 
-                        <TouchableOpacity style={styles.button} onPress={() => handleRegister(name, email, password)}>
+                        <TouchableOpacity 
+                            style={styles.button} 
+                            onPress={() => handleRegister(name, email, password)}
+                        >
                             <Text style={styles.buttonText}>Cadastrar</Text>
                         </TouchableOpacity>
-
                     </View>
-                </View>
-            </SafeAreaView>
-        </>
-    )
-}
+                </LinearGradient>
+            </DismissKeyboard>
+        </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: theme.colors.gradient.start
+    },
     container: {
         flex: 1,
-        paddingTop: 20,
-        backgroundColor: colors.black
+        paddingTop: theme.spacing.xl
     },
     header: {
-        paddingLeft: 18,
-        paddingRight: 14
+        paddingHorizontal: theme.spacing.lg
     },
     logoText: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        color: colors.white,
-        marginBottom: 8
+        color: theme.colors.text.light,
+        marginBottom: theme.spacing.sm
     },
     slogan: {
         fontSize: 34,
-        color: colors.white,
-        marginBottom: 43,
+        color: theme.colors.text.light,
+        marginBottom: theme.spacing.xxl,
     },
     form: {
         flex: 1,
-        backgroundColor: colors.white,
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        paddingTop: 24,
-        paddingLeft: 14,
-        paddingRight: 14
+        backgroundColor: theme.colors.background.main,
+        borderTopLeftRadius: theme.borderRadius.xl,
+        borderTopRightRadius: theme.borderRadius.xl,
+        padding: theme.spacing.xl,
+        ...theme.shadows.lg
+    },
+    inputContainer: {
+        marginBottom: theme.spacing.md
     },
     label: {
-        color: colors.zinc,
-        marginBottom: 4,
+        color: theme.colors.text.secondary,
+        marginBottom: theme.spacing.xs,
+        fontSize: 16
     },
     input: {
-        borderWidth: 1,
-        borderColor: colors.gray,
-        borderRadius: 9,
-        marginBottom: 16,
-        paddingHorizontal: 8,
-        paddingTop: 14,
-        paddingBottom: 14
+        backgroundColor: theme.colors.background.input,
+        borderRadius: theme.borderRadius.lg,
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.md,
+        color: theme.colors.text.primary,
+        ...theme.shadows.sm
     },
     button: {
-        backgroundColor: colors.blue,
-        paddingTop: 14,
-        paddingBottom: 14,
+        backgroundColor: theme.colors.primary,
+        paddingVertical: theme.spacing.md,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%',
-        borderRadius: 4
+        borderRadius: theme.borderRadius.lg,
+        marginTop: theme.spacing.xl,
+        ...theme.shadows.md
     },
     buttonText: {
         fontSize: 16,
-        color: 'white',
+        color: theme.colors.text.light,
         fontWeight: 'bold'
     },
     backButton: {
-        backgroundColor: colors.blue,
+        backgroundColor: theme.colors.primary,
         alignSelf: 'flex-start',
-        padding: 8,
-        borderRadius: 8,
-        marginBottom: 8
+        padding: theme.spacing.sm,
+        borderRadius: theme.borderRadius.lg,
+        marginBottom: theme.spacing.sm,
+        ...theme.shadows.sm
     }
-
 });
